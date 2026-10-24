@@ -56,6 +56,11 @@ public class LarpCommand {
                 () -> Component.literal("You are now larping as " + character.displayName() + ". " + character.description()),
                 false
         );
+
+        context.getSource().sendSuccess(
+                () -> Component.literal(ActiveAbilities.describe(character.id())),
+                false
+        );
         return 1;
     }
 
