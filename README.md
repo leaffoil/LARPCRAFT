@@ -14,3 +14,5 @@ October 21, 2026 - Started the project and added the /larp command (it does rn n
 October 22, 2026 - /larp now works it shows the available characters (gojo and ayanokoji)
 
 October 24, 2026 - /larp <character> now shows the character's skills
+
+October 31, 2026 - Added character skills, items, and /unlarp
