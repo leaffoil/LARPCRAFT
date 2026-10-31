@@ -13,7 +13,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class ActiveAbilities {
@@ -39,7 +38,7 @@ public class ActiveAbilities {
             String characterId = chosen.get();
 
             ItemStack stack = serverPlayer.getItemInHand(hand);
-            int slot = skillSlot(characterId, stack);
+            int slot = SkillItems.slotOf(characterId, stack);
             if (slot == 0) {
                 return InteractionResult.PASS;
             }
@@ -58,19 +57,6 @@ public class ActiveAbilities {
             activate(serverPlayer, level, characterId, slot);
             return InteractionResult.SUCCESS;
         });
-    }
-
-    // Which skill (1, 2 or 3 = ultimate) does this item trigger? 0 = none.
-    private static int skillSlot(String characterId, ItemStack stack) {
-        return switch (characterId) {
-            case "gojo" -> stack.is(Items.AMETHYST_SHARD) ? 1
-                    : stack.is(Items.ENDER_EYE) ? 2
-                    : stack.is(Items.NETHER_STAR) ? 3 : 0;
-            case "ayanokoji" -> stack.is(Items.BOOK) ? 1
-                    : stack.is(Items.FERMENTED_SPIDER_EYE) ? 2
-                    : stack.is(Items.ECHO_SHARD) ? 3 : 0;
-            default -> 0;
-        };
     }
 
     private static int cooldownTicks(int slot) {

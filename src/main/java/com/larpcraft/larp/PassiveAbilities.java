@@ -44,4 +44,10 @@ public class PassiveAbilities {
             }
         }
     }
+
+    public static void clearPassives(ServerPlayer player) {
+        player.removeEffect(MobEffects.RESISTANCE);
+        player.removeEffect(MobEffects.SPEED);
+        player.removeEffect(MobEffects.NIGHT_VISION);
+    }
 }

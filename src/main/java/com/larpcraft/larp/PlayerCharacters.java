@@ -16,4 +16,8 @@ public class PlayerCharacters {
     public static Optional<String> get(UUID playerId) {
         return Optional.ofNullable(SELECTED.get(playerId));
     }
+
+    public static void clear(UUID playerId) {
+        SELECTED.remove(playerId);
+    }
 }

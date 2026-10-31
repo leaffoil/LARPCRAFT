@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
@@ -14,6 +15,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 public class LarpCommand {
 
@@ -25,6 +27,10 @@ public class LarpCommand {
                             .then(Commands.argument("name", StringArgumentType.word())
                                     .suggests(LarpCommand::suggestCharacters)
                                     .executes(LarpCommand::selectCharacter))
+            );
+            dispatcher.register(
+                    Commands.literal("unlarp")
+                            .executes(LarpCommand::unlarp)
             );
         });
     }
@@ -42,7 +48,7 @@ public class LarpCommand {
     }
 
     // Runs for: /larp <name>
-    private static int selectCharacter(CommandContext<CommandSourceStack> context) {
+    private static int selectCharacter(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         String name = StringArgumentType.getString(context, "name");
         Optional<LarpCharacter> found = CharacterRegistry.get(name);
 
@@ -52,15 +58,41 @@ public class LarpCommand {
         }
 
         LarpCharacter character = found.get();
+        ServerPlayer player = context.getSource().getPlayerOrException();
+
+        // Clean up the previous character first, so nothing is duplicated or left over
+        SkillItems.removeAll(player);
+        PassiveAbilities.clearPassives(player);
+
+        PlayerCharacters.set(player.getUUID(), character.id());
+        PassiveAbilities.apply(player, character.id());
+        SkillItems.give(player, character.id());
+
         context.getSource().sendSuccess(
                 () -> Component.literal("You are now larping as " + character.displayName() + ". " + character.description()),
                 false
         );
-
         context.getSource().sendSuccess(
                 () -> Component.literal(ActiveAbilities.describe(character.id())),
                 false
         );
+        return 1;
+    }
+
+    // Runs for: /unlarp
+    private static int unlarp(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+
+        if (PlayerCharacters.get(player.getUUID()).isEmpty()) {
+            context.getSource().sendFailure(Component.literal("You are not larping as anyone."));
+            return 0;
+        }
+
+        PlayerCharacters.clear(player.getUUID());
+        SkillItems.removeAll(player);
+        PassiveAbilities.clearPassives(player);
+
+        context.getSource().sendSuccess(() -> Component.literal("You stopped larping."), false);
         return 1;
     }
 
