@@ -16,3 +16,5 @@ October 22, 2026 - /larp now works it shows the available characters (gojo and a
 October 24, 2026 - /larp <character> now shows the character's skills
 
 October 31, 2026 - Added character skills, items, and /unlarp
+
+November 3, 2026 - Now have a working .jar file
