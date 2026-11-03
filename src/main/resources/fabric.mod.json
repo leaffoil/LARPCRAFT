@@ -3,13 +3,13 @@
 	"id": "larpcraft",
 	"version": "${version}",
 	"name": "LARPCRAFT",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Larp as anime characters with unique passives, skills and ultimates. Use /larp <name> to pick a character and /unlarp to stop.",
 	"authors": [
-		"Me!"
+		"leaffoil"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/leaffoil/LARPCRAFT",
+		"sources": "https://github.com/leaffoil/LARPCRAFT"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/larpcraft/icon.png",
